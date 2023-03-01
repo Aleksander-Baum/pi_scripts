@@ -4,9 +4,9 @@ import sys
 
 def blink(_pin):
     wiringpi.digitalWrite(_pin, 1)
-    time.sleep(0,5)
+    time.sleep(0.5)
     wiringpi.digitalWrite(_pin, 0)
-    time.sleep(0,5)
+    time.sleep(0.5)
 
 print("Start")
 pin = 2
