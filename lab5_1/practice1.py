@@ -13,7 +13,7 @@ pin = 2
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(pin, 1)
 
-while true:
+while True:
     blink(pin)
 
 print("Done")
