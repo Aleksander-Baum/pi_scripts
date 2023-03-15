@@ -3,7 +3,7 @@ import wiringpi
 import sys
 
 # GPIO pins connected to the stepper motor driver
-STEP_PIN = 0
+STEP_PIN = 2
 DIR_PIN = 1
 
 # Set up the WiringPi library
