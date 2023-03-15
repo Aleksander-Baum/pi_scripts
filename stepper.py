@@ -40,7 +40,7 @@ for i in range(200):
 
 # Reset motor to initial position
 for i in range(200):
-    stepMotor(3-i, 'wave')
+    stepMotor((3-i) % 4, 'wave')
     time.sleep(0.01)  # wait 10ms between steps
 
 # # Example usage: move motor 200 steps in full step mode
