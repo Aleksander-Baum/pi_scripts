@@ -28,7 +28,6 @@ wiringpi.pinMode(MOTOR_PIN_2, wiringpi.OUTPUT)
 wiringpi.pinMode(MOTOR_PIN_3, wiringpi.OUTPUT)
 wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 
-# Example usage: move motor 200 steps in full step mode
-for i in range(200):
+for i in range(500):
     stepMotor(i % 4, 'full')
     time.sleep(0.01)  # wait 10ms between steps

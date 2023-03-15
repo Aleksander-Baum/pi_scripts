@@ -10,7 +10,8 @@ MOTOR_PIN_4 = 9
 WAVE_DRIVE_SEQUENCE = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]
 
 def stepMotor(step, mode):
-    sequence = WAVE_DRIVE_SEQUENCE
+    if mode == 'wave':
+        sequence = WAVE_DRIVE_SEQUENCE
 
     # Set the pins according to the current step
     wiringpi.digitalWrite(MOTOR_PIN_1, sequence[step][0])
