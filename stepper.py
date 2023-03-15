@@ -43,12 +43,12 @@ for i in range(200):
     stepMotor(i, 'wave')
     time.sleep(0.01)  # wait 10ms between steps
 
-# Example usage: move motor 200 steps in full step mode
-for i in range(200):
-    stepMotor(i % 4, 'full')
-    time.sleep(0.01)  # wait 10ms between steps
+# # Example usage: move motor 200 steps in full step mode
+# for i in range(200):
+#     stepMotor(i % 4, 'full')
+#     time.sleep(0.01)  # wait 10ms between steps
 
-# Reset motor to initial position
-for i in range(4):
-    stepMotor(i, 'full')
-    time.sleep(0.01)  # wait 10ms between steps
+# # Reset motor to initial position
+# for i in range(4):
+#     stepMotor(i, 'full')
+#     time.sleep(0.01)  # wait 10ms between steps
