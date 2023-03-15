@@ -35,7 +35,7 @@ wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 
 # Example usage: move motor 200 steps in wave drive mode
 for i in range(2000):
-    stepMotor(i % 4, 'wave')
+    stepMotor(i % 4, 'full')
     time.sleep(0.01)  # wait 10ms between steps
 
 # Reset motor to initial position
