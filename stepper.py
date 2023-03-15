@@ -1,37 +1,66 @@
-import time
-import wiringpi
-import sys
+import wiringpi as wp
 
-# GPIO pins connected to the stepper motor driver
-STEP_PIN = 2
-DIR_PIN = 1
+# Define GPIO pins for stepper motor coils
+coil_A_1_pin = 3
+coil_A_2_pin = 4
+coil_B_1_pin = 6
+coil_B_2_pin = 9
 
-# Set up the WiringPi library
-wiringpi.wiringPiSetup()
+# Define sequence of stepper motor steps
+step_sequence = [
+    [1, 0, 0, 1],
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1]
+]
 
-# Set up the GPIO pins as output
-wiringpi.pinMode(STEP_PIN, wiringpi.OUTPUT)
-wiringpi.pinMode(DIR_PIN, wiringpi.OUTPUT)
+# Define number of steps per revolution
+steps_per_rev = 512
 
-# Set the direction of the stepper motor
-wiringpi.digitalWrite(DIR_PIN, wiringpi.HIGH)
+# Initialize WiringPi library and set GPIO pins as output
+wp.wiringPiSetupGpio()
+wp.pinMode(coil_A_1_pin, wp.OUTPUT)
+wp.pinMode(coil_A_2_pin, wp.OUTPUT)
+wp.pinMode(coil_B_1_pin, wp.OUTPUT)
+wp.pinMode(coil_B_2_pin, wp.OUTPUT)
 
-# Define the number of steps per revolution and delay between steps
-steps_per_revolution = 200
-delay = 0.01
+# Define function to step motor forward or backward by specified number of steps
+def step_motor(steps, direction):
+    # Determine direction of rotation based on sign of step value
+    if direction == 'forward':
+        step_dir = 1
+    elif direction == 'backward':
+        step_dir = -1
+    else:
+        print("Invalid direction specified!")
+        return
 
-# Function to move the stepper motor a specified number of steps
-def move_steps(num_steps):
-    # Move the motor one step at a time in the specified direction
+    # Calculate number of steps to take
+    num_steps = abs(steps)
+
+    # Loop through steps and set motor coils accordingly
     for i in range(num_steps):
-        wiringpi.digitalWrite(STEP_PIN, wiringpi.HIGH)
-        time.sleep(delay)
-        wiringpi.digitalWrite(STEP_PIN, wiringpi.LOW)
-        time.sleep(delay)
+        # Calculate index of current step in sequence
+        step_idx = i % len(step_sequence)
 
-# Move the stepper motor 200 steps in one direction
-move_steps(steps_per_revolution)
+        # Set motor coils according to current step in sequence
+        wp.digitalWrite(coil_A_1_pin, step_sequence[step_idx][0])
+        wp.digitalWrite(coil_A_2_pin, step_sequence[step_idx][1])
+        wp.digitalWrite(coil_B_1_pin, step_sequence[step_idx][2])
+        wp.digitalWrite(coil_B_2_pin, step_sequence[step_idx][3])
 
-# Move the stepper motor 200 steps in the opposite direction
-wiringpi.digitalWrite(DIR_PIN, wiringpi.LOW)
-move_steps(steps_per_revolution)
+        # Delay to allow motor to move
+        wp.delayMicroseconds(1000)
+
+    # Turn off motor coils
+    wp.digitalWrite(coil_A_1_pin, 0)
+    wp.digitalWrite(coil_A_2_pin, 0)
+    wp.digitalWrite(coil_B_1_pin, 0)
+    wp.digitalWrite(coil_B_2_pin, 0)
+
+# Example usage: rotate motor forward by one revolution (512 steps)
+step_motor(steps_per_rev, 'forward')
