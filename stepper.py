@@ -1,45 +1,38 @@
-import RPi.GPIO as GPIO
-from time import sleep
-import sys
+from pyA20.gpio import gpio
+from pyA20.gpio import port
+import time
 
-#assign GPIO pins for motor
-motor_channel = (29,31,33,35)  
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-#for defining more than 1 GPIO channel as input/output use
-GPIO.setup(motor_channel, GPIO.OUT)
+# GPIO pins connected to the stepper motor driver
+step_pin = port.PA1
+dir_pin = port.PA0
 
-motor_direction = input('select motor direction a=anticlockwise, c=clockwise: ')
-while True:
-    try:
-        if(motor_direction == 'c'):
-            print('motor running clockwise\n')
-            GPIO.output(motor_channel, (GPIO.HIGH,GPIO.LOW,GPIO.LOW,GPIO.HIGH))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.HIGH,GPIO.HIGH,GPIO.LOW,GPIO.LOW))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.LOW,GPIO.HIGH,GPIO.HIGH,GPIO.LOW))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.LOW,GPIO.LOW,GPIO.HIGH,GPIO.HIGH))
-            sleep(0.02)
+# Set up the GPIO pins as output
+gpio.init()
+gpio.setcfg(step_pin, gpio.OUTPUT)
+gpio.setcfg(dir_pin, gpio.OUTPUT)
 
-        elif(motor_direction == 'a'):
-            print('motor running anti-clockwise\n')
-            GPIO.output(motor_channel, (GPIO.HIGH,GPIO.LOW,GPIO.LOW,GPIO.HIGH))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.LOW,GPIO.LOW,GPIO.HIGH,GPIO.HIGH))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.LOW,GPIO.HIGH,GPIO.HIGH,GPIO.LOW))
-            sleep(0.02)
-            GPIO.output(motor_channel, (GPIO.HIGH,GPIO.HIGH,GPIO.LOW,GPIO.LOW))
-            sleep(0.02)
+# Set the direction of the stepper motor
+gpio.output(dir_pin, gpio.HIGH)
 
-            
-    #press ctrl+c for keyboard interrupt
-    except KeyboardInterrupt:
-        #query for setting motor direction or exit
-        motor_direction = input('select motor direction a=anticlockwise, c=clockwise or q=exit: ')
-        #check for exit
-        if(motor_direction == 'q'):
-            print('motor stopped')
-            sys.exit(0)
+# Define the number of steps per revolution and delay between steps
+steps_per_revolution = 200
+delay = 0.005
+
+# Function to move the stepper motor a specified number of steps
+def move_steps(num_steps):
+    # Move the motor one step at a time in the specified direction
+    for i in range(num_steps):
+        gpio.output(step_pin, gpio.HIGH)
+        time.sleep(delay)
+        gpio.output(step_pin, gpio.LOW)
+        time.sleep(delay)
+
+# Move the stepper motor 200 steps in one direction
+move_steps(steps_per_revolution)
+
+# Move the stepper motor 200 steps in the opposite direction
+gpio.output(dir_pin, gpio.LOW)
+move_steps(steps_per_revolution)
+
+# Clean up the GPIO pins
+gpio.cleanup()
