@@ -10,12 +10,8 @@ MOTOR_PIN_4 = 9
 FULL_STEP_SEQUENCE = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
 
 def stepMotor(step, mode):
-    if mode == 'wave':
-        sequence = WAVE_DRIVE_SEQUENCE
-    elif mode == 'full':
+    if mode == 'full':
         sequence = FULL_STEP_SEQUENCE
-    else:
-        raise ValueError('Invalid mode')
 
     # Set the pins according to the current step
     wiringpi.digitalWrite(MOTOR_PIN_1, sequence[step][0])
@@ -35,9 +31,4 @@ wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 # Example usage: move motor 200 steps in full step mode
 for i in range(200):
     stepMotor(i % 4, 'full')
-    time.sleep(0.01)  # wait 10ms between steps
-
-# Reset motor to initial position
-for i in range(200):
-    stepMotor((3-i) % 4, 'full')
     time.sleep(0.01)  # wait 10ms between steps
