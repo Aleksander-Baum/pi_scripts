@@ -1,4 +1,5 @@
 import wiringpi
+import time
 
 MOTOR_PIN_1 = 3
 MOTOR_PIN_2 = 4
@@ -31,22 +32,12 @@ wiringpi.pinMode(MOTOR_PIN_2, wiringpi.OUTPUT)
 wiringpi.pinMode(MOTOR_PIN_3, wiringpi.OUTPUT)
 wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 
-# # Example usage: move motor 200 steps in wave drive mode
-# for i in range(200):
-#     stepMotor(i % 4, 'wave')
-#     wiringpi.delay(1000)  # wait 10ms between steps
-
-# # Reset motor to initial position
-# for i in range(200):
-#     stepMotor((3-i) % 4, 'wave')
-#     wiringpi.delay(1000)  # wait 10ms between steps
-
 # Example usage: move motor 200 steps in full step mode
 for i in range(200):
     stepMotor(i % 4, 'full')
-    wiringpi.delay(1000)  # wait 10ms between steps
+    time.sleep(0.01)  # wait 10ms between steps
 
 # Reset motor to initial position
 for i in range(200):
     stepMotor((3-i) % 4, 'full')
-    wiringpi.delay(1000)  # wait 10ms between steps
+    time.sleep(0.01)  # wait 10ms between steps
