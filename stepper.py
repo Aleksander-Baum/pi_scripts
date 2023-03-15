@@ -1,66 +1,53 @@
-import wiringpi as wp
+import wiringpi
 
-# Define GPIO pins for stepper motor coils
-coil_A_1_pin = 3
-coil_A_2_pin = 4
-coil_B_1_pin = 6
-coil_B_2_pin = 9
+MOTOR_PIN_1 = 3
+MOTOR_PIN_2 = 4
+MOTOR_PIN_3 = 6
+MOTOR_PIN_4 = 9
 
-# Define sequence of stepper motor steps
-step_sequence = [
-    [1, 0, 0, 1],
-    [1, 0, 0, 0],
-    [1, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 1, 0],
-    [0, 0, 1, 1],
-    [0, 0, 0, 1]
-]
+# Define the sequence of steps for each mode
+WAVE_DRIVE_SEQUENCE = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]
+FULL_STEP_SEQUENCE = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
 
-# Define number of steps per revolution
-steps_per_rev = 512
-
-# Initialize WiringPi library and set GPIO pins as output
-wp.wiringPiSetupGpio()
-wp.pinMode(coil_A_1_pin, wp.OUTPUT)
-wp.pinMode(coil_A_2_pin, wp.OUTPUT)
-wp.pinMode(coil_B_1_pin, wp.OUTPUT)
-wp.pinMode(coil_B_2_pin, wp.OUTPUT)
-
-# Define function to step motor forward or backward by specified number of steps
-def step_motor(steps, direction):
-    # Determine direction of rotation based on sign of step value
-    if direction == 'forward':
-        step_dir = 1
-    elif direction == 'backward':
-        step_dir = -1
+def stepMotor(step, mode):
+    if mode == 'wave':
+        sequence = WAVE_DRIVE_SEQUENCE
+    elif mode == 'full':
+        sequence = FULL_STEP_SEQUENCE
     else:
-        print("Invalid direction specified!")
-        return
+        raise ValueError('Invalid mode')
 
-    # Calculate number of steps to take
-    num_steps = abs(steps)
+    # Set the pins according to the current step
+    wiringpi.digitalWrite(MOTOR_PIN_1, sequence[step][0])
+    wiringpi.digitalWrite(MOTOR_PIN_2, sequence[step][1])
+    wiringpi.digitalWrite(MOTOR_PIN_3, sequence[step][2])
+    wiringpi.digitalWrite(MOTOR_PIN_4, sequence[step][3])
 
-    # Loop through steps and set motor coils accordingly
-    for i in range(num_steps):
-        # Calculate index of current step in sequence
-        step_idx = i % len(step_sequence)
+# Set up WiringPi
+wiringpi.wiringPiSetup()
 
-        # Set motor coils according to current step in sequence
-        wp.digitalWrite(coil_A_1_pin, step_sequence[step_idx][0])
-        wp.digitalWrite(coil_A_2_pin, step_sequence[step_idx][1])
-        wp.digitalWrite(coil_B_1_pin, step_sequence[step_idx][2])
-        wp.digitalWrite(coil_B_2_pin, step_sequence[step_idx][3])
+# Set up motor pins as outputs
+wiringpi.pinMode(MOTOR_PIN_1, wiringpi.OUTPUT)
+wiringpi.pinMode(MOTOR_PIN_2, wiringpi.OUTPUT)
+wiringpi.pinMode(MOTOR_PIN_3, wiringpi.OUTPUT)
+wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 
-        # Delay to allow motor to move
-        wp.delayMicroseconds(1000)
+# Example usage: move motor 200 steps in wave drive mode
+for i in range(200):
+    stepMotor(i % 4, 'wave')
+    wiringpi.delay(10)  # wait 10ms between steps
 
-    # Turn off motor coils
-    wp.digitalWrite(coil_A_1_pin, 0)
-    wp.digitalWrite(coil_A_2_pin, 0)
-    wp.digitalWrite(coil_B_1_pin, 0)
-    wp.digitalWrite(coil_B_2_pin, 0)
+# Reset motor to initial position
+for i in range(4):
+    stepMotor(i, 'wave')
+    wiringpi.delay(10)  # wait 10ms between steps
 
-# Example usage: rotate motor forward by one revolution (512 steps)
-step_motor(steps_per_rev, 'forward')
+# Example usage: move motor 200 steps in full step mode
+for i in range(200):
+    stepMotor(i % 4, 'full')
+    wiringpi.delay(10)  # wait 10ms between steps
+
+# Reset motor to initial position
+for i in range(4):
+    stepMotor(i, 'full')
+    wiringpi.delay(10)  # wait 10ms between steps
