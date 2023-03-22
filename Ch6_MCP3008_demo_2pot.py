@@ -30,7 +30,11 @@ try:
         ActivateADC()
         tmp0 = readadc(0) # read channel 0
         DeactivateADC()
+        ActivateADC()
+        tmp1 = readadc(1) # read channel 0
+        DeactivateADC()
         print ("input0:",tmp0)
+        print ("input1:",tmp1)
         time.sleep(0.2)
 
 except KeyboardInterrupt:
