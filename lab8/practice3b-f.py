@@ -1,35 +1,41 @@
 import time
 import wiringpi 
+import sys
 
-# Define a new function to control the motor instead of the LEDs
-def controlMotor(pin, speed):
-    # Speed should be between 0 and 100
-    wiringpi.softPwmWrite(pin, speed)
+def controlLEDs(sig1, sig2, cnt, wait):
+	wiringpi.softPwmWrite(sig1, cnt)
+	wiringpi.softPwmWrite(sig2, 100-cnt)
+	time.sleep(wait)
+
 
 #SETUP
 print("Start")
-motor_pin = 2  # assuming the motor is connected to GPIO pin 2
-pause_time = 0.02  # you can change this to slow down/speed up
+pin2 = 2
+pin5 = 5
+pause_time = 0.02           # you can change this to slow down/speed up
 wiringpi.wiringPiSetup() 
 
-# Set pin as a softPWM output
-wiringpi.softPwmCreate(motor_pin, 0, 100)
+# Set pins as a softPWM output
+wiringpi.softPwmCreate(pin2, 0, 100)
+wiringpi.softPwmCreate(pin5, 0, 100)
 
 # Start PWM
-wiringpi.softPwmWrite(motor_pin, 0)
+wiringpi.softPwmWrite(pin2, 0)
+wiringpi.softPwmWrite(pin5, 100)
 
 try:
-    while True:
-        # Run the motor forwards for 10 seconds
-        for i in range(0, 101):
-            controlMotor(motor_pin, i)
-            time.sleep(pause_time)
-        time.sleep(10)
+	while True:
+		wiringpi.softPwmWrite(pin2, 100)
+		wiringpi.softPwmWrite(pin5, 0)
+		time.sleep(10)
 
-        # Stop the motor for 2 seconds
-        controlMotor(motor_pin, 0)
-        time.sleep(2)
+		wiringpi.softPwmWrite(pin2, 0)
+		wiringpi.softPwmWrite(pin5, 0)
+		time.sleep(2)
 
 except KeyboardInterrupt:
-    controlMotor(motor_pin, 0)  # stop the motor
-    print("\nDone")
+	wiringpi.softPwmWrite(pin2, 0)            # stop the white PWM output
+	wiringpi.softPwmWrite(pin5, 0)            # stop the white PWM output
+	print("\nDone")
+
+

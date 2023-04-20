@@ -25,10 +25,21 @@ wiringpi.softPwmWrite(pin5, 100)
 
 try:
 	while True:
-		for i in range(0,101):      	# 101 because it stops when it finishes 100
-			controlLEDs(pin2,pin5,i,pause_time)
-		for i in range(100,-1,-1):      # from 100 to zero in steps of -1
-			controlLEDs(pin2,pin5,i,pause_time)
+		wiringpi.softPwmWrite(pin2, 100)
+		wiringpi.softPwmWrite(pin5, 0)
+		time.sleep(5)
+
+		wiringpi.softPwmWrite(pin2, 0)
+		wiringpi.softPwmWrite(pin5, 0)
+		time.sleep(5)
+
+		wiringpi.softPwmWrite(pin2, 0)
+		wiringpi.softPwmWrite(pin5, 100)
+		time.sleep(5)
+
+		wiringpi.softPwmWrite(pin2, 0)
+		wiringpi.softPwmWrite(pin5, 0)
+		time.sleep(5)
 
 except KeyboardInterrupt:
 	wiringpi.softPwmWrite(pin2, 0)            # stop the white PWM output
