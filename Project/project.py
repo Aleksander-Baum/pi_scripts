@@ -7,6 +7,7 @@ MOTOR_PIN_1 = 3
 MOTOR_PIN_2 = 4
 MOTOR_PIN_3 = 6
 MOTOR_PIN_4 = 9
+pinLed = 10
 
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(TRIG_PIN, wiringpi.OUTPUT)
@@ -17,6 +18,7 @@ wiringpi.pinMode(MOTOR_PIN_3, wiringpi.OUTPUT)
 wiringpi.pinMode(MOTOR_PIN_4, wiringpi.OUTPUT)
 WAVE_DRIVE_SEQUENCE = [[0,0,0,1], [0,0,1,0], [0,1,0,0], [1,0,0,0]]
 RWAVE_DRIVE_SEQUENCE = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]
+wiringpi.pinMode(pinLed, 1)
 
 def distance():
     wiringpi.digitalWrite(TRIG_PIN, wiringpi.HIGH)
@@ -46,6 +48,7 @@ def stepMotor(step, mode):
 # Test the distance function
 
 sensor_on = True
+ledcount = 0
 while sensor_on == True:
     dist = distance()
     while dist >= 20:
@@ -56,7 +59,14 @@ while sensor_on == True:
         for i in range(200):
             stepMotor(i % 4, 'wave')
             time.sleep(0.01)  # wait 10ms between steps
+        while ledcount <= 10:
+            wiringpi.digitalWrite(pinLed, 0)
+            time.sleep(0.5)
+            wiringpi.digitalWrite(pinLed, 1)
+            time.sleep(0.5)
+            ledcount += 1
         for j in range(200):
             stepMotor(j % 4, 'rwave')
             time.sleep(0.01)
+            wiringpi.digitalWrite(pinLed, 1)
         sensor_on = False
