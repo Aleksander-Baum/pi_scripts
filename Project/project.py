@@ -51,15 +51,15 @@ sensor_on = True
 ledcount = 0
 while sensor_on == True:
     dist = distance()
-    while dist >= 20:
+    while dist >= 35:
         dist = distance()
         print(f"Measured Distance: {dist:.2f} cm")
-        time.sleep(1)
+        time.sleep(1.5)
     else:
         for i in range(200):
             stepMotor(i % 4, 'wave')
             time.sleep(0.01)  # wait 10ms between steps
-        while ledcount <= 10:
+        while ledcount <= 5:
             wiringpi.digitalWrite(pinLed, 0)
             time.sleep(0.5)
             wiringpi.digitalWrite(pinLed, 1)
