@@ -45,7 +45,7 @@ wiringpi.pinMode(pinLed, 1)
 wiringpi.pinMode(pinSwitch1, 0)
 wiringpi.pinMode(pinSwitch2, 0)
 wiringpi.pinMode(pin_CS_lcd , 1)            # Set pin to mode 1 ( OUTPUT )
-url = "http://muizenval2.hub.ubeac.io/iotessaleksanderbaum"
+url = "http://muizenval2.hub.ubeac.io/muizenvalaleksander"
 uid = "iotessaleksanderbaum"
 
 ActivateLCD()
