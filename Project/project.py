@@ -45,7 +45,7 @@ wiringpi.pinMode(pinLed, 1)
 wiringpi.pinMode(pinSwitch1, 0)
 wiringpi.pinMode(pinSwitch2, 0)
 wiringpi.pinMode(pin_CS_lcd , 1)            # Set pin to mode 1 ( OUTPUT )
-url = "http://muizenval2.hub.ubeac.io/muizenvalaleksander"
+url = "http://muizenval.hub.ubeac.io/iotessaleksanderbaum"
 uid = "iotessaleksanderbaum"
 
 ActivateLCD()
@@ -117,7 +117,6 @@ while True:
                 time.sleep(0.01)  # wait 10ms between steps
     if dist < 35:
         triggercount += 1
-        trapstatus = 1
         ActivateLCD()
         lcd_1.clear()
         lcd_1.go_to_xy(0, 0)
@@ -129,6 +128,7 @@ while True:
             time.sleep(0.01)  # wait 10ms between steps
             trapclosed = True
     while trapclosed == True:
+        trapstatus = 1
         data= {
             "id": uid,
             "sensors":[{
