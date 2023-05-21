@@ -64,4 +64,5 @@ if __name__ == '__main__':
             else:
                 label = labels[i]
             print(label)
+        print("\n")
         time.sleep(1.5)

@@ -1,8 +1,4 @@
-import argparse
 import time
-import numpy as np
-import tensorflow as tf
-import cv2
 import wiringpi
 import json
 import requests
@@ -81,38 +77,7 @@ def stepMotor(step, mode):
     wiringpi.digitalWrite(MOTOR_PIN_3, sequence[step][2])
     wiringpi.digitalWrite(MOTOR_PIN_4, sequence[step][3])
 
-def load_labels(filename):
-    with open(filename, 'r') as f:
-        return [line.strip() for line in f.readlines()]
-
-def preprocess_image(image, input_mean, input_std):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = cv2.resize(image, (width, height))
-    image = (image.astype(np.float32) - input_mean) / input_std
-    image = np.expand_dims(image, axis=0)
-    return image
-
 # Test the distance function
-
-parser = argparse.ArgumentParser()
-args = parser.parse_args()
-
-# Load the TFLite model and allocate tensors
-interpreter = tf.lite.Interpreter(
-    model_path='/tmp/model_unquant.tflite')
-interpreter.allocate_tensors()
-
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-
-# Get input shape and model details
-height = input_details[0]['shape'][1]
-width = input_details[0]['shape'][2]
-floating_model = input_details[0]['dtype'] == np.float32
-labels = load_labels('/tmp/labels.txt')
-
-# Initialize camera capture
-capture = cv2.VideoCapture(1) 
 
 current_time = time.localtime()
 current_hour = str(f"{current_time.tm_hour}:{current_time.tm_min}")
